@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Una pregunta importante</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            color: #764ba2;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .gif-container {
+            width: 100%;
+            height: 250px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .gif-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .gif-placeholder {
+            color: #999;
+            font-size: 1.2em;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            position: relative;
+            height: 60px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #btnSi {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            z-index: 1000;
+        }
+
+        #btnSi:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        #btnNo {
+            background: #e74c3c;
+            color: white;
+            position: fixed;
+            transition: none;
+        }
+
+        #btnNo:hover {
+            background: #c0392b;
+        }
+
+        .heart {
+            position: fixed;
+            font-size: 2em;
+            animation: float 3s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        .celebration {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .celebration h2 {
+            font-size: 4em;
+            color: #764ba2;
+            margin-bottom: 20px;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>¿Quieres salir conmigo?</h1>
+        
+        <div class="gif-container">
+            <img src="https://tenor.com/search/amor-gifs" alt="">
+        </div>
+        
+        <div class="buttons-container">
+            <button id="btnSi">Sí ❤️</button>
+            <button id="btnNo">No</button>
+        </div>
+    </div>
+
+    <div class="celebration" id="celebration">
+        <h2>¡Sabía que dirías que sí! 💕</h2>
+        <p style="font-size: 1.5em; color: #667eea;">¡Será increíble! 🎉</p>
+    </div>
+
+    <script>
+        const btnSi = document.getElementById('btnSi');
+        const btnNo = document.getElementById('btnNo');
+        const celebration = document.getElementById('celebration');
+        const container = document.querySelector('.container');
+        let siSize = 1;
+        let noMoves = 0;
+        let isNoPositioned = false;
+
+        // Posicionar el botón No inicialmente
+        function positionNoButton() {
+            const containerRect = container.getBoundingClientRect();
+            const buttonsContainer = document.querySelector('.buttons-container');
+            const buttonsRect = buttonsContainer.getBoundingClientRect();
+            
+            // Posición inicial del botón No (a la derecha del botón Sí)
+            if (!isNoPositioned) {
+                btnNo.style.left = (buttonsRect.right - 170) + 'px';
+                btnNo.style.top = buttonsRect.top + 'px';
+                isNoPositioned = true;
+            }
+        }
+
+        // Posicionar al cargar
+        window.addEventListener('load', positionNoButton);
+
+        btnNo.addEventListener('mouseover', function() {
+            noMoves++;
+            
+            const maxX = window.innerWidth - btnNo.offsetWidth - 20;
+            const maxY = window.innerHeight - btnNo.offsetHeight - 20;
+            
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+            
+            btnNo.style.left = randomX + 'px';
+            btnNo.style.top = randomY + 'px';
+            
+            siSize += 0.3;
+            btnSi.style.transform = `scale(${siSize})`;
+            
+            if (noMoves > 5) {
+                siSize += 0.5;
+            }
+            
+            createHeart();
+        });
+
+        btnNo.addEventListener('click', function(e) {
+            e.preventDefault();
+            const maxX = window.innerWidth - btnNo.offsetWidth - 20;
+            const maxY = window.innerHeight - btnNo.offsetHeight - 20;
+            
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+            
+            btnNo.style.left = randomX + 'px';
+            btnNo.style.top = randomY + 'px';
+            
+            siSize += 0.5;
+            btnSi.style.transform = `scale(${siSize})`;
+            
+            createHeart();
+        });
+
+        btnSi.addEventListener('click', function() {
+            celebration.style.display = 'flex';
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => createHeart(), i * 100);
+            }
+        });
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            heart.style.top = Math.random() * window.innerHeight + 'px';
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
